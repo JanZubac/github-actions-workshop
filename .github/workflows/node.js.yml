@@ -11,8 +11,11 @@ on:
 
 jobs:
   build:
-
+    name: "Build and Test"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
     strategy:
       matrix:
@@ -27,11 +30,7 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
-    - run: npm test
-    - name: 'Install Deps'
-      run: npm install
-    - name: 'Test'
-      run: npx vitest --coverage.enabled true
-    - name: 'Report Coverage'
-      if: always() 
-      uses:  davelosert/vitest-coverage-report-action@v2
+    - run: npm run test
+    - uses: davelosert/vitest-coverage-report-action@v2
+      with: 
+        vite-config-path: vite.config.ts
